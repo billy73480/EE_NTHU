@@ -1,4 +1,3 @@
-# EE_NTHU
+# EE_NTHU_handwriting_recognition
 
-handwriting recognition
-
+This is the GitHub repository for the course "Special Topic on Implementaion", offered by EE, NTHU, Taiwan.
