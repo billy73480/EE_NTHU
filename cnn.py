@@ -33,7 +33,7 @@ im_array = numpy.array( [numpy.array(Image.open(imagePath[i]).convert('L'), 'f')
 '''
 
 # Convert to grayscale and apply Gaussian filtering
-im_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+##im_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
 im_gray = cv2.GaussianBlur(im_gray, (3, 3), 0)
 #cv2.imshow(" cv2.GaussianBlur", im_gray)
 #cv2.waitKey()
