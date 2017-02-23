@@ -21,8 +21,9 @@ print("Loaded model from disk")
 loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 print("model complie")
 
-# Read the input image 
-im = cv2.imread("note_1.jpg")
+# Input the image 
+# im = cv2.imread("note_1.jpg")
+img_gray = cv2.imread('note_1.jpg', cv2.IMREAD_GRAYSCALE)
 
 # Read image into 3D array
 '''
@@ -33,17 +34,17 @@ im_array = numpy.array( [numpy.array(Image.open(imagePath[i]).convert('L'), 'f')
 '''
 
 # Convert to grayscale and apply Gaussian filtering
-im_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-im_gray = cv2.GaussianBlur(im_gray, (3, 3), 0)
-#cv2.imshow(" cv2.GaussianBlur", im_gray)
+#im_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+img_blur = cv2.GaussianBlur(img_gray, (3, 3), 0)
+#cv2.imshow(" cv2.GaussianBlur", img_blur)
 #cv2.waitKey()
 
 # Threshold the image
-ret, im_th = cv2.threshold(im_gray, 90, 255, cv2.THRESH_BINARY_INV)
-#cv2.imshow(" cv2.threshold", im_th)
+img_thr = cv2.adaptiveThreshold(img_blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 3, 3)
+#cv2.imshow(" cv2.threshold", img_thr)
 
 # Find contours in the image
-im_test ,ctrs, hier = cv2.findContours(im_th.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+im_test ,ctrs, hier = cv2.findContours(img_thr.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
 # Get rectangles contains each contour
 rects = [cv2.boundingRect(ctr) for ctr in ctrs]
@@ -52,12 +53,12 @@ rects = [cv2.boundingRect(ctr) for ctr in ctrs]
 # the digit using Linear SVM.
 for rect in rects:
     # Draw the rectangles
-    cv2.rectangle(im, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3) 
+    cv2.rectangle(img, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3) 
     # Make the rectangular region around the digit
     leng = int(rect[3] * 1.6)
     pt1 = int(rect[1] + rect[3] // 2 - leng // 2)
     pt2 = int(rect[0] + rect[2] // 2 - leng // 2)
-    roi = im_th[pt1:pt1+leng, pt2:pt2+leng]
+    roi = img_thr[pt1:pt1+leng, pt2:pt2+leng]
 
     # Resize the image
     roi = cv2.resize(roi, (28, 28), interpolation=cv2.INTER_AREA)
