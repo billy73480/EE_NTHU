@@ -23,9 +23,8 @@ print("model complie")
 
 # Input the image 
 img = cv2.imread("note_1.jpg")
-img_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+img_gray = cv2.cvtColor(img cv2.COLOR_BGR2GRAY)
 #img_gray = cv2.imread('note_1.jpg', cv2.IMREAD_GRAYSCALE)
-
 # Read image into 3D array
 '''
 imageFolderPath = '/home/B/Pictures/'
