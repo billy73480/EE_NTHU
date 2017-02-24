@@ -54,7 +54,7 @@ for rect in rects:
 		cv2.rectangle(img, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3)
 		roi = img_thr[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
 		roi = cv2.dilate(roi, (3, 3))
-		cv2.imwrite('roi_0%d.png'%n, roi)
+		#cv2.imwrite('roi_0%d.png'%n, roi)
 		
 		# Create a black image
 		roi_black = np.zeros((28, 28), np.uint8)
@@ -74,7 +74,7 @@ for rect in rects:
 			roi = cv2.resize(roi, (20, 20), interpolation = cv2.INTER_LINEAR)
 			roi_black[4:24, 4:24] = roi
 			
-		cv2.imwrite('roi_1%d.png'%n, black)
+		#cv2.imwrite('roi_1%d.png'%n, black)
 		n += 1
 		
 		#reshape for model input based on X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, 1)
