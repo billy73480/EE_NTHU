@@ -22,8 +22,9 @@ loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['
 print("model complie")
 
 # Input the image 
-# im = cv2.imread("note_1.jpg")
-img_gray = cv2.imread('note_1.jpg', cv2.IMREAD_GRAYSCALE)
+img = cv2.imread("note_1.jpg")
+img_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+#img_gray = cv2.imread('note_1.jpg', cv2.IMREAD_GRAYSCALE)
 
 # Read image into 3D array
 '''
@@ -33,8 +34,7 @@ imagePath = glob.glob(imageFolderPath+'/*.JPG')
 im_array = numpy.array( [numpy.array(Image.open(imagePath[i]).convert('L'), 'f') for i in range(len(imagePath))] )
 '''
 
-# Convert to grayscale and apply Gaussian filtering
-#im_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+# Apply Gaussian filtering
 img_blur = cv2.GaussianBlur(img_gray, (3, 3), 0)
 
 # Threshold the image
@@ -53,14 +53,25 @@ for rect in rects:
     if ((rect[2]+rect[3])*2)>40:
         # Draw the rectangles
         cv2.rectangle(img, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3) 
+        
         # Make the rectangular region around the digit
+        '''
         leng = int(rect[3] * 1.6)
         pt1 = int(rect[1] + rect[3] // 2 - leng // 2)
         pt2 = int(rect[0] + rect[2] // 2 - leng // 2)
         roi = img_thr[pt1:pt1+leng, pt2:pt2+leng]
+        '''
         
         # Resize the image
-        roi = cv2.resize(roi, (28, 28), interpolation=cv2.INTER_AREA)
+        if rect[2] > rect[3]:
+            ratio = 24/rect[2]
+            roi = cv2.resize(XXXX)
+            if 
+        elif rect[2] < rect[3]:
+            
+        else:
+            
+            
         roi = cv2.dilate(roi, (3, 3))    
        
     
