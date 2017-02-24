@@ -45,6 +45,7 @@ rects = [cv2.boundingRect(ctr) for ctr in ctrs]
 
 # For each rectangular region, calculate HOG features and predict
 # the digit using Linear SVM.
+n = 1
 for rect in rects:
 	if ((rect[2]+rect[3]))>20:
 		# Draw the rectangles
