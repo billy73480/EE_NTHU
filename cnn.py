@@ -1,4 +1,4 @@
-# Import the modules
+# Import modules
 import cv2
 from sklearn.externals import joblib
 from skimage.feature import hog
@@ -34,10 +34,8 @@ imagePath = glob.glob(imageFolderPath+'/*.JPG')
 im_array = numpy.array( [numpy.array(Image.open(imagePath[i]).convert('L'), 'f') for i in range(len(imagePath))] )
 '''
 
-# Apply Gaussian filtering
+# Image pre-processing
 img_blur = cv2.GaussianBlur(img_gray, (3, 3), 0)
-
-# Threshold the image
 img_thr = cv2.adaptiveThreshold(img_blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 3, 3)
 
 # Find contours in the image
