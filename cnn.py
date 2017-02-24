@@ -45,7 +45,7 @@ rects = [cv2.boundingRect(ctr) for ctr in ctrs]
 
 # For each rectangular region, calculate HOG features and predict
 # the digit using Linear SVM.
-n = 1
+#n = 1
 for rect in rects:
 	if ((rect[2]+rect[3]))>20:
 		# Draw the rectangles
@@ -73,7 +73,7 @@ for rect in rects:
 			roi_black[4:24, 4:24] = roi
 			
 		#cv2.imwrite('roi_1%d.png'%n, black)
-		n += 1
+		#n += 1
 		
 		#reshape for model input based on X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, 1)
 		roi_black = roi_black.reshape(1, 28, 28, 1)
