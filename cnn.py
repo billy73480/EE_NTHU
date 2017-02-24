@@ -52,7 +52,8 @@ rects = [cv2.boundingRect(ctr) for ctr in ctrs]
 for rect in rects:
     if ((rect[2]+rect[3])*2)>40:
         # Draw the rectangles
-        cv2.rectangle(img, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3) 
+        cv2.rectangle(img, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3)
+        roi = im_thr[rect[0]:rect[0]+rect[3], rect[1]:rect[1]+rect[2]]
         
         # Make the rectangular region around the digit
         '''
@@ -65,7 +66,7 @@ for rect in rects:
         # Resize the image
         if rect[2] > rect[3]:
             ratio = 24/rect[2]
-            roi = cv2.resize(XXXX)
+            roi = cv2.resize(roi, (2*width, 2*height), interpolation = cv2.INTER_LINEAR)
             if 
         elif rect[2] < rect[3]:
             
