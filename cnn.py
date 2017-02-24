@@ -47,7 +47,7 @@ rects = [cv2.boundingRect(ctr) for ctr in ctrs]
 # the digit using Linear SVM.
 #n = 1
 for rect in rects:
-	if ((rect[2]+rect[3])>20 && rect[2]!=0 && rect[3]!=0):
+	if ((rect[2]+rect[3])>20 and rect[2]!=0 and rect[3]!=0):
 		# Draw the rectangles
 		cv2.rectangle(img, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3)
 		roi = img_thr[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
