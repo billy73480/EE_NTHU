@@ -38,8 +38,7 @@ im_array = numpy.array( [numpy.array(Image.open(imagePath[i]).convert('L'), 'f')
 img_blur = cv2.GaussianBlur(img_gray, (3, 3), 0)
 
 # Threshold the image
-img_thr = cv2.adaptiveThreshold(img_blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 3, 3)
-#cv2.imshow(" cv2.threshold", img_thr)
+img_thr = cv2.adaptiveThreshold(img_blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 3, 3)
 
 # Find contours in the image
 im_test ,ctrs, hier = cv2.findContours(img_thr.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -50,36 +49,39 @@ rects = [cv2.boundingRect(ctr) for ctr in ctrs]
 # For each rectangular region, calculate HOG features and predict
 # the digit using Linear SVM.
 for rect in rects:
-    if ((rect[2]+rect[3])*2)>40:
+    if ((rect[2]+rect[3]))>20:
         # Draw the rectangles
         cv2.rectangle(img, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3)
-        roi = im_thr[rect[0]:rect[0]+rect[3], rect[1]:rect[1]+rect[2]]
-        
-        # Make the rectangular region around the digit
-        '''
-        leng = int(rect[3] * 1.6)
-        pt1 = int(rect[1] + rect[3] // 2 - leng // 2)
-        pt2 = int(rect[0] + rect[2] // 2 - leng // 2)
-        roi = img_thr[pt1:pt1+leng, pt2:pt2+leng]
-        '''
+        roi = img_thr[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
+	    roi = cv2.dilate(roi, (3, 3))
+	    cv2.imwrite('roi_0%d.png'%n, roi)
+                
+        # Create a black image
+	    roi_black = np.zeros((28, 28), np.uint8)
         
         # Resize the image
-        if rect[2] > rect[3]:
-            ratio = 24/rect[2]
-            roi = cv2.resize(roi, (2*width, 2*height), interpolation = cv2.INTER_LINEAR)
-            if 
-        elif rect[2] < rect[3]:
-            
+        if rect[2] < rect[3]:
+            width = rect[2]*20/rect[3]
+            roi = cv2.resize(roi, (width, 20), interpolation = cv2.INTER_LINEAR)
+	        width_st = (28-width)/2
+            roi_black[4:24, width_st:width_st+width] = roi
+        elif rect[2] > rect[3]:
+            height = rect[3]*20/rect[2]
+            roi = cv2.resize(roi, (20, height), interpolation = cv2.INTER_LINEAR)
+	        height_st = (28-height)/2
+            roi_black[height_st:height_st+height, 4:24] = roi
         else:
-            
-            
-        roi = cv2.dilate(roi, (3, 3))    
-       
+            roi = cv2.resize(roi, (20, 20), interpolation = cv2.INTER_LINEAR)
+	        roi_black[4:24, 4:24] = roi
+        
+        cv2.imwrite('roi_1%d.png'%n, black)
+	    n += 1
     
         #reshape for model input based on X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, 1)
-        roi = roi.reshape(1, 28, 28, 1)
-        nbr = loaded_model.predict_classes(roi, verbose = 1)
-        cv2.putText(im, str(int(nbr[0])), (rect[0], rect[1]),cv2.FONT_HERSHEY_DUPLEX, 2, (0, 255, 255), 3)
+        roi_black = roi_black.reshape(1, 28, 28, 1)
+        nbr = loaded_model.predict_classes(roi_black, verbose = 1)
+        cv2.putText(img, str(int(nbr[0])), (rect[0], rect[1]),cv2.FONT_HERSHEY_DUPLEX, 2, (0, 255, 255), 3)
 
-cv2.imshow("Resulting Image with Rectangular ROIs", im)
+cv2.imshow("Resulting Image with Rectangular ROIs", img)
+cv2.imwrite('Result.png', img)
 cv2.waitKey()
