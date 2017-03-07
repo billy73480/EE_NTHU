@@ -60,19 +60,21 @@ for rect in rects:
 		roi_black = np.zeros((28, 28), np.uint8)
 		
 		# Resize the image
+		long_side = 20
 		if rect[2] < rect[3]:
-			width = rect[2]*20/rect[3]
-			roi = cv2.resize(roi, (width, 20), interpolation = cv2.INTER_LINEAR)
-			width_st = (28-width)/2
-			roi_black[4:24, width_st:width_st+width] = roi
+			height = long_side
+			width = rect[2] * (size/rect[3])
 		elif rect[2] > rect[3]:
-			height = rect[3]*20/rect[2]
-			roi = cv2.resize(roi, (20, height), interpolation = cv2.INTER_LINEAR)
-			height_st = (28-height)/2
-			roi_black[height_st:height_st+height, 4:24] = roi
+			height = rect[3] * (size/rect[2])
+			width = long_side
 		else:
-			roi = cv2.resize(roi, (20, 20), interpolation = cv2.INTER_LINEAR)
-			roi_black[4:24, 4:24] = roi
+			height = long_side
+			width = long_side
+
+		height_st = (28-height)/2
+		width_st = (28-width)/2
+		roi = cv2.resize(roi, (width, height), interpolation = cv2.INTER_LINEAR)
+		roi_black[height_st : height_st+size, width_st : width_st+width] = roi
 			
 		#cv2.imwrite('roi_1%d.png'%n, black)
 		#n += 1
