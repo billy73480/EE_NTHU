@@ -34,8 +34,12 @@ im_array = numpy.array( [numpy.array(Image.open(imagePath[i]).convert('L'), 'f')
 '''
 
 # Image pre-processing
-img_blur = cv2.GaussianBlur(img_gray, (3, 3), 0)
-img_thr = cv2.adaptiveThreshold(img_blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 3, 3)
+img_blur = cv2.GaussianBlur(img_gray, (5, 5), 0)
+img_thr = cv2.adaptiveThreshold(img_blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 9, 4)
+kernel = np.ones((2, 2), np.uint8)
+img_ero = cv2.erode(img_thr, kernel, iterations = 1)
+kernel = np.ones((4, 4), np.uint8)
+img_dil = cv2.dilate(img_ero, kernel, iterations = 1)
 
 # Find contours in the image
 im_test ,ctrs, hier = cv2.findContours(img_thr.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -51,8 +55,6 @@ for rect in rects:
 		# Draw the rectangles
 		cv2.rectangle(img, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3)
 		roi = img_thr[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
-		roi = cv2.dilate(roi, (3, 3))
-		#cv2.imwrite('roi_0%d.png'%n, roi)
 		
 		# Create a black image
 		roi_black = np.zeros((28, 28), np.uint8)
