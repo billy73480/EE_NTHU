@@ -49,36 +49,40 @@ rects = [cv2.boundingRect(ctr) for ctr in ctrs]
 
 # For each rectangular region, calculate HOG features and predict
 # the digit using Linear SVM.
-#n = 1
+long_side = 20
+
 for rect in rects:
-	if ((rect[2]+rect[3])>20 and rect[2]!=0 and rect[3]!=0):
+	if ((rect[2]+rect[3])>20):
+
+		pt_col = rect[0]
+		pt_row = rect[1]
+        	width = rect[2]
+		height = rect[3]
+
 		# Draw the rectangles
-		cv2.rectangle(img, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3)
-		roi = img_thr[rect[1]:rect[1]+rect[3], rect[0]:rect[0]+rect[2]]
+		cv2.rectangle(img, (pt_col, pt_row), (pt_col + width, pt_row + height), (0, 255, 0), 3)
+		roi = img_dil[pt_row:pt_row+height, pt_col:pt_col+width]
 		
 		# Create a black image
 		roi_black = np.zeros((28, 28), np.uint8)
 		
 		# Resize the image
-		long_side = 28
-		if rect[2] < rect[3]:
-			height = long_side
-			width = rect[2] * (size/rect[3])
-		elif rect[2] > rect[3]:
-			height = rect[3] * (size/rect[2])
-			width = long_side
-		else:
-			height = long_side
-			width = long_side
-
-		height_st = (28-height)/2
-		width_st = (28-width)/2
-		roi = cv2.resize(roi, (width, height), interpolation = cv2.INTER_LINEAR)
-		roi_black[height_st : height_st+size, width_st : width_st+width] = roi
-			
-		#cv2.imwrite('roi_1%d.png'%n, black)
-		#n += 1
 		
+		if width < height:
+			width = width * long_side / height
+			height = long_side			
+		elif width > height:
+			width = long_side
+			height = height * long_side / width			
+		else:
+			width = long_side
+			height = long_side			
+
+		width_st = (28-width)/2
+		height_st = (28-height)/2		
+		roi = cv2.resize(roi, (width, height), interpolation = cv2.INTER_LINEAR)
+		roi_black[height_st : height_st+height, width_st : width_st+width] = roi
+				
 		#reshape for model input based on X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, 1)
 		roi_black = roi_black.reshape(1, 28, 28, 1)
 		nbr = loaded_model.predict_classes(roi_black, verbose = 1)
